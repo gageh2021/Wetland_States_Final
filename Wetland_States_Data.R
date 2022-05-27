@@ -109,6 +109,42 @@ barplot_2<-ggplot(data=proportion_data, aes(x=State, y=Area_Proportion_km))+
 barplot_2
 ggsave(filename = here("Figures","Barplot2_Proportion_State.png"))
 
+#Open Water Cover
+
+water_filtered<-filter(RdNBR_data,State!="E") #Filter out state E as it should have no water
+water_filtered #Please substitute for wetland_data if you would like to exclude state E classification error
+
+mean(A$Open_water)
+mean(B$Open_water)
+mean(C$Open_water)
+mean(D$Open_water)
+mean(E$Open_water)
+
+sd(A$Open_water)
+sd(B$Open_water)
+sd(C$Open_water)
+sd(D$Open_water)
+sd(E$Open_water)
+
+av6_aov<-aov(Open_water~State,data=wetland_data)
+anova(av6_aov)
+par(mfrow=c(2,2))
+plot(av6_aov)
+shapiro.test(wetland_data$Open_water)
+bartlett.test(wetland_data$Open_water~wetland_data$State)
+TukeyHSD(av6_aov, conf.level=.95)
+
+boxplot_7<-ggplot(wetland_data,aes(x=State,y=Open_water))+theme_classic()+geom_boxplot(notch=FALSE,outlier.shape = NA)+
+  labs(y='Proportion of Open Water (%)', x="Successional State")+
+  theme(plot.title=element_text(size=20, face="bold", hjust=0.5,lineheight=1.2),  
+        axis.title.x=element_text(size=20,face='bold'),  
+        axis.title.y=element_text(size=20,face='bold'),  
+        axis.text.x=element_text(size=17, vjust=.5,colour='black'),  
+        axis.text.y=element_text(size=17,colour='black'))+
+  geom_jitter(alpha=0.7,colour='#98022e')
+boxplot_7
+ggsave(filename = here("Figures","Boxplot7_Open_Water_State.png"))
+
 #Burn Severity -------------------
 
 mean(A$RdNBR_mean)
@@ -124,8 +160,8 @@ sd(E$RdNBR_SD)
 
 av3<-lm(wetland_data$RdNBR_mean~wetland_data$State)
 anova(av3)
-par(mfrow=c(1,1))
 plot(av3)
+par(mfrow=c(1,1))
 shapiro.test(wetland_data$RdNBR_mean)
 bartlett.test(wetland_data$RdNBR_mean~wetland_data$State)
 kruskal.test(RdNBR_mean~State,data=wetland_data)
@@ -290,10 +326,10 @@ sd(Dam_Y$RdNBR_mean)
 mean(Dam_N$RdNBR_mean)
 sd(Dam_N$RdNBR_mean)
 
-mean(Dam_Y$Mean_NDWI_Pre)
-sd(Dam_Y$Mean_NDWI_Pre)
-mean(Dam_N$Mean_NDWI_Pre)
-sd(Dam_N$Mean_NDWI_Pre)
+mean(Dam_Y$Open_water)
+sd(Dam_Y$Open_water)
+mean(Dam_N$Open_water)
+sd(Dam_N$Open_water)
 
 barplot_10<-ggplot(data=proportion_data, aes(x=State, y=Dam_Proportion))+
   geom_bar(stat="identity", fill="#98022e")+labs(y="Proportion of Wetlands with a Beaver dam (%)",x="Successional State")+
@@ -317,31 +353,9 @@ boxplot_9<-ggplot(data=beaver_data, aes(x=Beaver_Dam, y=RdNBR_mean))+
 boxplot_9
 ggsave(filename = here("Figures","Boxplot9_Dam_RdNBR.png"))
 
-wilcox.test(Mean_NDWI_Pre ~ Beaver_Dam, data=beaver_data)
+wilcox.test(Open_water ~ Beaver_Dam, data=beaver_data)
 
-boxplot_10<-ggplot(data=beaver_data, aes(x=Beaver_Dam, y=Mean_NDWI_Pre))+
-  geom_boxplot(outlier.shape = NA)+labs(y="Mean Pre-Fire NDWI",x="Beaver Dam")+
-  theme_classic()+
-  theme(plot.title=element_text(size=20, face="bold", hjust=0.5,lineheight=1.2),  
-        axis.title.x=element_text(size=20,face='bold'),  
-        axis.title.y=element_text(size=20,face='bold'),  
-        axis.text.x=element_text(size=17, vjust=.5,colour='black'),  
-        axis.text.y=element_text(size=17,colour='black'))+geom_jitter(alpha=0.7,colour='#98022e')
-boxplot_10
-ggsave(filename = here("Figures","Boxplot10_Dam_Mean_NDWI_Pre.png"))
-
-boxplot_11<-ggplot(data=beaver_data, aes(x=Beaver_Dam, y=Mean_NDWI_Post))+
-  geom_boxplot(outlier.shape = NA)+labs(y="Mean Post-Fire NDWI",x="Beaver Dam")+
-  theme_classic()+
-  theme(plot.title=element_text(size=20, face="bold", hjust=0.5,lineheight=1.2),  
-        axis.title.x=element_text(size=20,face='bold'),  
-        axis.title.y=element_text(size=20,face='bold'),  
-        axis.text.x=element_text(size=17, vjust=.5,colour='black'),  
-        axis.text.y=element_text(size=17,colour='black'))+geom_jitter(alpha=0.7,colour='#98022e')
-boxplot_11
-ggsave(filename = here("Figures","Boxplot11_Dam_Mean_NDWI_Post.png"))
-
-boxplot_13<-ggplot(data=beaver_data,aes(x=Beaver_Dam,y=Water_Proportion))+
+boxplot_10<-ggplot(data=beaver_data, aes(x=Beaver_Dam, y=Open_water))+
   geom_boxplot(outlier.shape = NA)+labs(y="Proportion of Open Water (%)",x="Beaver Dam")+
   theme_classic()+
   theme(plot.title=element_text(size=20, face="bold", hjust=0.5,lineheight=1.2),  
@@ -349,4 +363,5 @@ boxplot_13<-ggplot(data=beaver_data,aes(x=Beaver_Dam,y=Water_Proportion))+
         axis.title.y=element_text(size=20,face='bold'),  
         axis.text.x=element_text(size=17, vjust=.5,colour='black'),  
         axis.text.y=element_text(size=17,colour='black'))+geom_jitter(alpha=0.7,colour='#98022e')
-boxplot_13
+boxplot_10
+ggsave(filename = here("Figures","Boxplot10_Dam_Open_Water.png"))
