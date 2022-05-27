@@ -311,7 +311,7 @@ Mean_density<-ggplot(data=wetland_data,aes(x=RdNBR_mean,y=State,fill=stat(x)))+t
         legend.text = element_text(size=15),legend.position = c(0.85,0.85),
         legend.box.background = element_rect(colour = "black"))
 Mean_density
-ggsave(filename = here("Figures","Density1_Mean_RdNBR.png"))
+ggsave(filename = here("Figures","Density2_Mean_RdNBR.png"))
 
 #Beaver Dams ----------------------
 
